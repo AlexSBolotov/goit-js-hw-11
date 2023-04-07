@@ -1,6 +1,6 @@
 export class CardsAPI {
-  static #BASE_URL = 'https://pixabay.com/api/';
-  static #API_KEY = '35145991-8e435058d664d73dd92e9cfc9';
+  static BASE_URL = 'https://pixabay.com/api/';
+  static API_KEY = '35145991-8e435058d664d73dd92e9cfc9';
 
   static query = null;
   static page = 1;
@@ -8,7 +8,7 @@ export class CardsAPI {
 
   static getCards(query) {
     const params = new URLSearchParams({
-      key: CardsAPI.#API_KEY,
+      key: CardsAPI.API_KEY,
       q: query,
       page: CardsAPI.page,
       per_page: CardsAPI.perPage,
@@ -16,7 +16,7 @@ export class CardsAPI {
       orientation: 'horizontal',
       safesearch: true,
     });
-    return fetch(`${CardsAPI.#BASE_URL}?${params}`).then(res => {
+    return fetch(`${CardsAPI.BASE_URL}?${params}`).then(res => {
       if (!res.ok) {
         throw new Error(res.status);
       }
