@@ -1,22 +1,24 @@
 export class CardsAPI {
-  static #BASE_URL = 'https://pixabay.com/api/';
-  static #API_KEY = '35145991-8e435058d664d73dd92e9cfc9';
-
-  static page = 1;
-  static perPage = 40;
-
-  static getCards(query) {
-    console.log(CardsAPI.#BASE_URL);
-    const params = new URLSearchParams({
-      key: CardsAPI.#API_KEY,
-      q: query,
-      page: CardsAPI.page,
-      per_page: CardsAPI.perPage,
+  static BASE_URL = 'https://pixabay.com/api/';
+  static API_KEY = '35145991-8e435058d664d73dd92e9cfc9';
+  constructor() {
+    this.query = null;
+    this.page = 1;
+  }
+  settingUrl() {
+    return {
+      key: CardsAPI.API_KEY,
+      q: this.query,
+      page: this.page,
+      per_page: 40,
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-    });
-    return fetch(`${CardsAPI.#BASE_URL}?${params}`).then(res => {
+    };
+  }
+  getCards(query) {
+    const params = new URLSearchParams(this.settingUrl());
+    return fetch(`${CardsAPI.BASE_URL}?${params}`).then(res => {
       if (!res.ok) {
         throw new Error(res.status);
       }
@@ -24,20 +26,3 @@ export class CardsAPI {
     });
   }
 }
-
-// const BASE_URL = 'https://restcountries.com/v3.1/';
-// export function fetchCountries(query) {
-//   return fetch(
-//     `${BASE_URL}/name/${query}?fields=name,capital,population,flags,languages`
-//   ).then(response => {
-//     if (!response.ok) {
-//       throw new Error(response.status);
-//     }
-//     return response.json();
-//   });
-// .catch(err => {
-//   console.log(err);
-//   if (err.message === 404) {
-//     console.log(err);
-//   }
-// });
