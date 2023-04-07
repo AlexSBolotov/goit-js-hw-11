@@ -28,7 +28,9 @@ function onFormSubmit(e) {
 }
 function onFetchSucces(res) {
   if (res.total === 0) {
-    throw new Error(res.status);
+    throw new Error(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
   }
   totalPages = Math.ceil(res.totalHits / 40);
   Notify.success(`Hooray! We found ${res.totalHits} images.`);
@@ -37,9 +39,9 @@ function onFetchSucces(res) {
   refs.addMoreBtn.style.display = 'block';
 }
 
-function onFetchError() {
+function onFetchError(err) {
   clearMarkup();
-  Notify.failure('There is no matches!');
+  Notify.failure(err.message);
 }
 
 function onAddMoreBtnClick(e) {
