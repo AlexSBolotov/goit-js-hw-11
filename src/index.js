@@ -16,7 +16,7 @@ refs.addMoreBtn.addEventListener('click', onAddMoreBtnClick);
 function onFormSubmit(e) {
   e.preventDefault();
   let query = e.target.elements.searchQuery.value;
-  CardsAPI.query = query;
+
   CardsAPI.getCards(query)
     .then(res => {
       renderMarkup(res.hits);
