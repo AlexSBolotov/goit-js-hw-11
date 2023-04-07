@@ -1,6 +1,6 @@
 import './css/styles.css';
 import { Notify } from 'notiflix';
-import { cardsAPI } from './cardsAPI';
+import { CardsAPI } from './cardsAPI.js';
 import galleryCardTmplt from './templates/galleryCardTmplt.hbs';
 
 const refs = {
@@ -16,9 +16,8 @@ refs.addMoreBtn.addEventListener('click', onAddMoreBtnClick);
 function onFormSubmit(e) {
   e.preventDefault();
   let query = e.target.elements.searchQuery.value;
-  cardsAPI.query = query;
-  cardsAPI
-    .getCards(query)
+  CardsAPI.query = query;
+  CardsAPI.getCards(query)
     .then(res => {
       renderMarkup(res.hits);
       refs.addMoreBtn.style.display = 'block';
@@ -27,13 +26,11 @@ function onFormSubmit(e) {
       clearMarkup();
       Notify.failure('There is no matches!');
     });
-
-  // page += 1;
 }
 function onAddMoreBtnClick(e) {
   console.log('Hello');
-  cardsAPI.page += 1;
-  cardsAPI.getCards(query).then(res => renderMarkup(res.hits));
+  CardsAPI.page += 1;
+  CardsAPI.getCards(query).then(res => renderMarkup(res.hits));
 }
 function clearMarkup() {
   refs.cardContainer.innerHTML = '';
