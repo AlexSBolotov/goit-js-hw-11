@@ -7,6 +7,7 @@ export class CardsAPI {
   static perPage = 40;
 
   static getCards(query) {
+    console.log(CardsAPI.#BASE_URL);
     const params = new URLSearchParams({
       key: CardsAPI.#API_KEY,
       q: query,
