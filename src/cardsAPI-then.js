@@ -16,13 +16,13 @@ export class CardsAPI {
       safesearch: true,
     };
   }
-  async getCards(query) {
+  getCards(query) {
     const params = new URLSearchParams(this.settingUrl());
-    const res = await fetch(`${CardsAPI.BASE_URL}?${params}`);
-    if (!res.ok) {
-      throw new Error(res.status);
-    }
-    const cards = await res.json();
-    return cards;
+    return fetch(`${CardsAPI.BASE_URL}?${params}`).then(res => {
+      if (!res.ok) {
+        throw new Error(res.status);
+      }
+      return res.json();
+    });
   }
 }

@@ -12,26 +12,21 @@ const refs = {
 };
 const cardsAPI = new CardsAPI();
 let totalPages = null;
+// console.log(cardsAPI);
 
-showBtn('none');
-
+refs.addMoreBtn.style.display = 'none';
 refs.searchFormEl.addEventListener('submit', onFormSubmit);
 refs.addMoreBtn.addEventListener('click', onAddMoreBtnClick);
 
-async function onFormSubmit(e) {
+function onFormSubmit(e) {
   e.preventDefault();
   clearMarkup();
-  showBtn('none');
+  refs.addMoreBtn.style.display = 'none';
 
   cardsAPI.page = 1;
   cardsAPI.query = e.target.elements.searchQuery.value;
 
-  try {
-    const res = await cardsAPI.getCards(cardsAPI.query);
-    onFetchSucces(res);
-  } catch (err) {
-    onFetchError(err);
-  }
+  cardsAPI.getCards(cardsAPI.query).then(onFetchSucces).catch(onFetchError);
 }
 function onFetchSucces(res) {
   if (res.total === 0) {
@@ -43,7 +38,7 @@ function onFetchSucces(res) {
   Notify.success(`Hooray! We found ${res.totalHits} images.`);
   renderMarkup(res.hits);
   refs.searchFormEl.reset();
-  showBtn('block');
+  refs.addMoreBtn.style.display = 'block';
 }
 
 function onFetchError(err) {
@@ -51,13 +46,11 @@ function onFetchError(err) {
   Notify.failure(err.message);
 }
 
-async function onAddMoreBtnClick(e) {
+function onAddMoreBtnClick(e) {
   cardsAPI.page += 1;
-  const res = await cardsAPI.getCards(cardsAPI.query);
-  renderMarkup(res.hits);
-
+  cardsAPI.getCards(cardsAPI.query).then(res => renderMarkup(res.hits));
   if (cardsAPI.page === totalPages) {
-    showBtn('none');
+    refs.addMoreBtn.style.display = 'none';
     Notify.info(`We're sorry, but you've reached the end of search results.`);
   }
 }
@@ -67,7 +60,4 @@ function clearMarkup() {
 function renderMarkup(data) {
   const markup = data.map(card => galleryCardTmplt(card)).join('');
   refs.cardContainer.insertAdjacentHTML('beforeend', markup);
-}
-function showBtn(status) {
-  refs.addMoreBtn.style.display = status;
 }
