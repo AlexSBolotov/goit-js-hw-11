@@ -1,3 +1,4 @@
+import axios from 'axios/dist/browser/axios.cjs';
 export class CardsAPI {
   static BASE_URL = 'https://pixabay.com/api/';
   static API_KEY = '35145991-8e435058d664d73dd92e9cfc9';
@@ -18,11 +19,11 @@ export class CardsAPI {
   }
   async getCards(query) {
     const params = new URLSearchParams(this.settingUrl());
-    const res = await fetch(`${CardsAPI.BASE_URL}?${params}`);
-    if (!res.ok) {
-      throw new Error(res.status);
+    const res = await axios.get(`${CardsAPI.BASE_URL}?${params}`);
+    console.log(res);
+    if (res.statusText) {
+      throw new Error(res.statusText);
     }
-    const cards = await res.json();
-    return cards;
+    return res.data;
   }
 }
