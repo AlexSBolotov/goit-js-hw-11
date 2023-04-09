@@ -1,32 +1,37 @@
-import './css/styles.css';
+import '../css/styles.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix';
 import { CardsAPI } from './cardsAPI.js';
-import galleryCardTmplt from './templates/galleryCardTmplt.hbs';
+import galleryCardTmplt from '../templates/galleryCardTmplt.hbs';
 
 const refs = {
   searchFormEl: document.querySelector('.search-form'),
   cardContainer: document.querySelector('.gallery'),
   addMoreBtn: document.querySelector('.load-more'),
 };
+showBtn('none');
+
 const cardsAPI = new CardsAPI();
 let totalPages = null;
-// console.log(cardsAPI);
 
-refs.addMoreBtn.style.display = 'none';
 refs.searchFormEl.addEventListener('submit', onFormSubmit);
 refs.addMoreBtn.addEventListener('click', onAddMoreBtnClick);
 
-function onFormSubmit(e) {
+async function onFormSubmit(e) {
   e.preventDefault();
   clearMarkup();
-  refs.addMoreBtn.style.display = 'none';
+  showBtn('none');
 
   cardsAPI.page = 1;
   cardsAPI.query = e.target.elements.searchQuery.value;
 
-  cardsAPI.getCards(cardsAPI.query).then(onFetchSucces).catch(onFetchError);
+  try {
+    const res = await cardsAPI.getCards(cardsAPI.query);
+    onFetchSucces(res);
+  } catch (err) {
+    onFetchError(err);
+  }
 }
 function onFetchSucces(res) {
   if (res.total === 0) {
@@ -37,8 +42,13 @@ function onFetchSucces(res) {
   totalPages = Math.ceil(res.totalHits / 40);
   Notify.success(`Hooray! We found ${res.totalHits} images.`);
   renderMarkup(res.hits);
+
   refs.searchFormEl.reset();
-  refs.addMoreBtn.style.display = 'block';
+  if (res.totalHits <= 40) {
+    showBtn('none');
+    return;
+  }
+  showBtn('block');
 }
 
 function onFetchError(err) {
@@ -46,11 +56,13 @@ function onFetchError(err) {
   Notify.failure(err.message);
 }
 
-function onAddMoreBtnClick(e) {
+async function onAddMoreBtnClick(e) {
   cardsAPI.page += 1;
-  cardsAPI.getCards(cardsAPI.query).then(res => renderMarkup(res.hits));
+  const res = await cardsAPI.getCards(cardsAPI.query);
+  renderMarkup(res.hits);
+
   if (cardsAPI.page === totalPages) {
-    refs.addMoreBtn.style.display = 'none';
+    showBtn('none');
     Notify.info(`We're sorry, but you've reached the end of search results.`);
   }
 }
@@ -60,4 +72,12 @@ function clearMarkup() {
 function renderMarkup(data) {
   const markup = data.map(card => galleryCardTmplt(card)).join('');
   refs.cardContainer.insertAdjacentHTML('beforeend', markup);
+  let gallery = new SimpleLightbox('.gallery a', {
+    captionsData: 'alt',
+    captionDelay: '250',
+  });
+  gallery.refresh();
+}
+function showBtn(status) {
+  refs.addMoreBtn.style.display = status;
 }
