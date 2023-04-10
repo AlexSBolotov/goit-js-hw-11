@@ -61,7 +61,7 @@ async function onAddMoreBtnClick(e) {
   const res = await cardsAPI.getCards(cardsAPI.query);
   renderMarkup(res.hits);
   window.scrollBy({
-    top: 440 * 2,
+    top: 430 * 2,
     behavior: 'smooth',
   });
 
