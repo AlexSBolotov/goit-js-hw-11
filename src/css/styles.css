@@ -135,7 +135,9 @@ input[type='search']:focus {
 .gallery__item {
   border: 1px solid currentColor;
   border-radius: 5px;
-  flex-basis: 360px;
+  width: 360px;
+  /* flex-basis: 360px; */
+  height: 360px;
   box-shadow: 0 0 3px 0 currentColor;
 }
 .gallery__image {

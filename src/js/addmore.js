@@ -60,6 +60,10 @@ async function onAddMoreBtnClick(e) {
   cardsAPI.page += 1;
   const res = await cardsAPI.getCards(cardsAPI.query);
   renderMarkup(res.hits);
+  window.scrollBy({
+    top: 440 * 2,
+    behavior: 'smooth',
+  });
 
   if (cardsAPI.page === totalPages) {
     showBtn('none');
