@@ -32,7 +32,7 @@ async function onFormSubmit(e) {
   cardsAPI.query = e.target.elements.searchQuery.value;
 
   try {
-    const res = await cardsAPI.getCards(cardsAPI.query);
+    const res = await cardsAPI.getCards();
     onFetchSucces(res);
   } catch (err) {
     onFetchError(err);
@@ -66,7 +66,7 @@ function onFetchError(err) {
 async function addMoreCards() {
   cardsAPI.page += 1;
 
-  const res = await cardsAPI.getCards(cardsAPI.query);
+  const res = await cardsAPI.getCards();
 
   renderMarkup(res.hits);
 
