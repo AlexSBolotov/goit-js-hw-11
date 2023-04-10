@@ -20,9 +20,6 @@ export class CardsAPI {
   async getCards(query) {
     const params = new URLSearchParams(this.settingUrl());
     const res = await axios.get(`${CardsAPI.BASE_URL}?${params}`);
-    if (res.statusText) {
-      throw new Error(res.statusText);
-    }
     return res.data;
   }
 }
