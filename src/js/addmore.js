@@ -10,7 +10,7 @@ const refs = {
   cardContainer: document.querySelector('.gallery'),
   addMoreBtn: document.querySelector('.load-more'),
 };
-showBtn('none');
+hideBtn();
 
 const cardsAPI = new CardsAPI();
 let totalPages = null;
@@ -21,7 +21,7 @@ refs.addMoreBtn.addEventListener('click', onAddMoreBtnClick);
 async function onFormSubmit(e) {
   e.preventDefault();
   clearMarkup();
-  showBtn('none');
+  hideBtn();
 
   cardsAPI.page = 1;
   cardsAPI.query = e.target.elements.searchQuery.value;
@@ -45,10 +45,10 @@ function onFetchSucces(res) {
 
   refs.searchFormEl.reset();
   if (res.totalHits <= 40) {
-    showBtn('none');
+    hideBtn();
     return;
   }
-  showBtn('block');
+  showBtn();
 }
 
 function onFetchError(err) {
@@ -60,13 +60,10 @@ async function onAddMoreBtnClick(e) {
   cardsAPI.page += 1;
   const res = await cardsAPI.getCards();
   renderMarkup(res.hits);
-  window.scrollBy({
-    top: 430 * 2,
-    behavior: 'smooth',
-  });
+  addSmoothScroll();
 
   if (cardsAPI.page === totalPages) {
-    showBtn('none');
+    hideBtn();
     Notify.info(`We're sorry, but you've reached the end of search results.`);
   }
 }
@@ -74,14 +71,41 @@ function clearMarkup() {
   refs.cardContainer.innerHTML = '';
 }
 function renderMarkup(data) {
-  const markup = data.map(card => galleryCardTmplt(card)).join('');
-  refs.cardContainer.insertAdjacentHTML('beforeend', markup);
+  refs.cardContainer.insertAdjacentHTML('beforeend', createMarkup(data));
+  insertLightox();
+}
+
+function createMarkup(data) {
+  return data.map(card => galleryCardTmplt(card)).join('');
+}
+function insertLightox() {
   let gallery = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: '250',
   });
   gallery.refresh();
 }
-function showBtn(status) {
-  refs.addMoreBtn.style.display = status;
+function showBtn() {
+  refs.addMoreBtn.classList.remove('is-hidden');
 }
+function hideBtn() {
+  refs.addMoreBtn.classList.add('is-hidden');
+}
+function addSmoothScroll() {
+  window.scrollBy({
+    top: 430 * 2,
+    behavior: 'smooth',
+  });
+}
+// function renderMarkup(data) {
+//   const markup = data.map(card => galleryCardTmplt(card)).join('');
+//   refs.cardContainer.insertAdjacentHTML('beforeend', markup);
+//   let gallery = new SimpleLightbox('.gallery a', {
+//     captionsData: 'alt',
+//     captionDelay: '250',
+//   });
+//   gallery.refresh();
+// }
+// function showBtn(status) {
+//   refs.addMoreBtn.style.display = status;
+// }

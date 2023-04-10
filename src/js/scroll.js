@@ -80,11 +80,26 @@ function clearMarkup() {
   refs.cardContainer.innerHTML = '';
 }
 function renderMarkup(data) {
-  const markup = data.map(card => galleryCardTmplt(card)).join('');
-  refs.cardContainer.insertAdjacentHTML('beforeend', markup);
+  refs.cardContainer.insertAdjacentHTML('beforeend', createMarkup(data));
+  insertLightox();
+}
+
+function createMarkup(data) {
+  return data.map(card => galleryCardTmplt(card)).join('');
+}
+function insertLightox() {
   let gallery = new SimpleLightbox('.gallery a', {
     captionsData: 'alt',
     captionDelay: '250',
   });
   gallery.refresh();
 }
+// function renderMarkup(data) {
+//   const markup = data.map(card => galleryCardTmplt(card)).join('');
+//   refs.cardContainer.insertAdjacentHTML('beforeend', markup);
+//   let gallery = new SimpleLightbox('.gallery a', {
+//     captionsData: 'alt',
+//     captionDelay: '250',
+//   });
+//   gallery.refresh();
+// }
